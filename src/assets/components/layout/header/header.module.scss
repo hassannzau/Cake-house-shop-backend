@@ -1,0 +1,569 @@
+@import "@/styles/utils/mixin.module";
+@import "@/styles/utils/variables.module";
+@import "@/styles/utils/maps.module";
+
+.headerWrap {
+  @include position(sticky, 0, $z-index: 50);
+  background: rgb(253 247 252);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  margin-bottom: 5px;
+
+  .header_main {
+    @include flex($justify: space-between, $align: center, $gap: 18px);
+    width: min(92%, 1400px);
+    margin: 0 auto;
+    padding: 18px 0;
+
+    .headerLeft {
+      @include flex($align: center, $gap: 50px);
+      .burger {
+        display: none;
+        @include container(
+          42px,
+          42px,
+          12px,
+          1px solid rgba(0, 0, 0, 0.08),
+          rgba(255, 255, 255, 0.9)
+        );
+        cursor: pointer;
+
+        span {
+          display: block;
+          @include container(18px, 2px, 2px, $background: rgba(0, 0, 0, 0.75));
+          margin: 4px auto;
+        }
+      }
+
+      .headerLogo {
+        @include container(110px, 60px);
+        @include flex($align: center);
+        cursor: pointer;
+        img {
+          @include container(100%, 100%);
+          object-fit: contain;
+        }
+      }
+
+      .desktopNav {
+        display: block;
+
+        .pageList {
+          @include flex($gap: 18px, $align: center);
+          list-style: none;
+          margin: 0;
+          padding: 0;
+
+          .navItem {
+            position: relative;
+            padding: 10px 8px;
+            cursor: pointer;
+            @include font(
+              15px,
+              $weight: 900,
+              $color: rgba(211, 116, 143, 0.92)
+            );
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.2s ease;
+          }
+        }
+      }
+    }
+    .headerRight {
+      @include flex($align: center, $gap: 14px);
+
+      .searchBox {
+        position: relative;
+        width: clamp(170px, 28vw, 360px);
+
+        .searchInput {
+          @include container(
+            100%,
+            44px,
+            999px,
+            1px solid rgba(0, 0, 0, 0.1),
+            rgba(255, 255, 255, 0.9)
+          );
+          padding: 0 44px 0 16px;
+          outline: none;
+          transition: box-shadow 0.2s ease, border 0.2s ease;
+          &:focus {
+            border: 1px solid rgba(172, 97, 118, 0.45);
+            box-shadow: 0 14px 35px rgba(172, 97, 118, 0.18);
+          }
+        }
+        .searchIcon {
+          @include position(absolute, 50%, _, 14px);
+          @include container(18px, 18px);
+          transform: translateY(-50%);
+          opacity: 0.7;
+          pointer-events: none;
+        }
+      }
+
+      .iconBtn {
+        @include container(
+          42px,
+          42px,
+          999px,
+          1px solid rgba(0, 0, 0, 0.08),
+          rgba(255, 255, 255, 0.9)
+        );
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        img {
+          @include container(18px, 18px);
+        }
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+        }
+      }
+    }
+  }
+
+  .backWall {
+    @include position(fixed, $z-index: 70);
+    @include container(_, 100vh, $background: rgba(0, 0, 0, 0.25));
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .backWallOpen {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .userModal {
+    @include position(fixed, 0, _, 0, $z-index: 80);
+    @include container(min(420px, 92vw), 100vh, $background: #fff);
+    padding: 18px;
+    box-shadow: -12px 0 40px rgba(0, 0, 0, 0.18);
+    border-left: 1px solid rgba(0, 0, 0, 0.06);
+
+    .modalTop {
+      @include flex($justify: space-between, $align: center);
+      padding: 18px 8px 10px 8px;
+
+      p {
+        @include font(14px, $weight: 900);
+        letter-spacing: 0.12em;
+      }
+
+      .closeIcon {
+        @include container(
+          40px,
+          40px,
+          12px,
+          1px solid rgba(0, 0, 0, 0.08),
+          rgba(255, 255, 255, 0.9)
+        );
+        cursor: pointer;
+
+        img {
+          @include container(16px, 16px);
+        }
+      }
+    }
+
+    .formModal {
+      @include flex(column, 14px);
+      padding: 12px 8px;
+      margin-top: 8px;
+
+      .modalInput {
+        @include container(100%, 52px, 14px, 1px solid rgba(0, 0, 0, 0.1));
+        padding: 0 14px;
+        outline: none;
+      }
+
+      .aboutPass {
+        @include flex(_, 10px, center, space-between);
+        @include font(12px, $color: rgba(0, 0, 0, 0.65));
+
+        .rememberPass {
+          @include flex(_, 10px, center);
+        }
+        .lostPass {
+          @include font($weight: 800, $color: rgba(172, 97, 118, 1));
+          text-decoration: none;
+        }
+      }
+
+      .loginBtn {
+        @include container(100%, 48px, 999px, 0, rgba(17, 17, 17, 0.92));
+        @include font($color: #fff, $weight: 900);
+        letter-spacing: 0.12em;
+        cursor: pointer;
+      }
+
+      .createAcc {
+        text-align: center;
+        font-size: 14px;
+        margin-top: 6px;
+
+        a {
+          @include font($weight: 900, $color: rgba(172, 97, 118, 1));
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+.navItem::after {
+  content: "";
+  @include position(absolute, _, 8px, 8px, 6px);
+  @include container(_, 3px, 2px, _, rgba(172, 97, 118, 0.9));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.navItem:hover {
+  color: rgba(172, 97, 118, 1);
+}
+
+.navItem:hover::after {
+  transform: scaleX(1);
+}
+
+.mobileDrawer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: min(320px, 88vw);
+  height: 100vh;
+  background: #fff;
+  z-index: 85;
+  box-shadow: 12px 0 40px rgba(0, 0, 0, 0.18);
+  padding: 16px;
+}
+
+.drawerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  p {
+    font-weight: 900;
+    letter-spacing: 0.12em;
+  }
+}
+
+.drawerClose {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.mobileNavList {
+  list-style: none;
+  padding: 18px 0 0 0;
+  margin: 0;
+
+  li {
+    padding: 14px 10px;
+    border-radius: 14px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.78);
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  li:hover {
+    background: rgba(221, 114, 144, 0.1);
+  }
+}
+
+.userModal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: min(420px, 92vw);
+  background: #fff;
+  z-index: 80;
+  padding: 18px;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.18);
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.userModalOpen {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.active {
+  color: rgba(172, 97, 118, 1);
+}
+
+.active::after {
+  transform: scaleX(1);
+}
+
+/* =========================
+   SHOPPING BAG DRAWER
+========================= */
+.cartDrawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: min(420px, 92vw);
+  background: #fff;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.18);
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.cartHeader {
+  height: 64px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.cartTitle {
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.cartClose {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.cartBody {
+  flex: 1;
+  overflow: auto;
+  padding: 14px 16px;
+}
+
+.cartList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.cartItem {
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.cartImg {
+  width: 86px;
+  height: 110px;
+  object-fit: cover;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.cartMeta {
+  display: grid;
+  gap: 10px;
+}
+
+.cartTopLine {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cartItemTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.cartAttrs {
+  display: grid;
+  gap: 4px;
+  margin-top: 6px;
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.cartRemove {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.6;
+}
+
+.cartRemove:hover {
+  opacity: 1;
+}
+
+.cartBottomLine {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cartQty {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cartQtyBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.cartQtyVal {
+  min-width: 18px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.cartPrice {
+  margin: 0;
+  font-weight: 900;
+}
+
+.cartFooter {
+  padding: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+}
+
+.cartSubtotal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 14px;
+
+  span:first-child {
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    font-size: 12px;
+  }
+
+  span:last-child {
+    font-weight: 900;
+  }
+}
+
+.cartViewBtn {
+  width: 100%;
+  height: 52px;
+  border: 0;
+  background: rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
+.cartCheckoutBtn {
+  width: 100%;
+  height: 56px;
+  border: 0;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+/* empty state */
+.cartEmpty {
+  padding: 24px 8px;
+  text-align: center;
+
+  p {
+    margin: 0 0 14px;
+    color: rgba(0, 0, 0, 0.65);
+  }
+}
+
+.cartEmptyBtn {
+  height: 46px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  background: #fff;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+@media (max-width: 1024px) {
+  .headerLogo {
+    width: 190px;
+  }
+
+  .pageList {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .burger {
+    display: inline-block;
+  }
+
+  .desktopNav {
+    display: none;
+  }
+
+  .searchBox {
+    width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchBox {
+    display: none;
+  }
+}
