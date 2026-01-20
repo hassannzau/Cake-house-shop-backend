@@ -1,0 +1,44 @@
+.topGrid {
+  margin-bottom: 46px;
+}
+
+.storeCard {
+
+  padding-top: 10px;
+  width: 80%;
+  margin: 60px auto;
+  max-width: 1400px;
+}
+
+.storeTitle {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin: 0 0 18px;
+  color: #111;
+}
+
+.storeBlock {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 18px;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(0, 0, 0, 0.75);
+  }
+}
+
+.storeLink {
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(0, 0, 0, 0.82);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
