@@ -1,0 +1,62 @@
+.mapWrap {
+  height: 520px;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ===== Custom Pin ===== */
+.pin {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+
+}
+
+.pinDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #d3748f;
+  box-shadow: 0 10px 24px rgba(211, 116, 143, 0.35);
+  border: 2px solid #fff;
+  z-index: 2;
+}
+
+.pinPulse {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: rgba(211, 116, 143, 0.18);
+  border: 1px solid rgba(211, 116, 143, 0.35);
+  z-index: 1;
+}
+
+/* ===== Popup ===== */
+.popup {
+  min-width: 200px;
+  padding: 4px 2px;
+}
+
+.popupTitle {
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  font-size: 14px;
+}
+
+.popupSub {
+  margin-top: 2px;
+  font-size: 12px;
+  opacity: 0.75;
+  font-weight: 700;
+}
+
+.popupText {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.35;
+  opacity: 0.85;
+}
