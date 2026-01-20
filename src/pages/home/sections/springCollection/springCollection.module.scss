@@ -1,0 +1,159 @@
+@import "./../../../../styles/utils/mixin.module";
+@import "./../../../../styles/utils/variables.module";
+@import "./../../../../styles/utils/maps.module";
+
+.springCollection {
+  position: relative;
+  margin: 96px 0;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+
+  /* responsive padding */
+  padding: 0 clamp(16px, 6vw, 150px);
+
+  background-image: url("../../../../assets/images/home/collections/deal_timer_bg.jpg");
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  border-radius: 28px;
+  overflow: hidden;
+
+  /* soft shadow like a card */
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.14);
+}
+
+/* overlay for text readability */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.82) 0%,
+    rgba(255, 255, 255, 0.55) 38%,
+    rgba(255, 255, 255, 0.05) 70%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.springContainer {
+  position: relative;
+  z-index: 2;
+
+  /* premium glass card */
+  max-width: 560px;
+  padding: clamp(18px, 2.2vw, 28px);
+  border-radius: 22px;
+
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.12);
+
+  @include flex(column, 14px);
+  align-items: flex-start;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 8px 12px;
+  border-radius: 999px;
+
+  background: rgba(195, 41, 41, 0.1);
+  border: 1px solid rgba(195, 41, 41, 0.15);
+
+  @include font(12px, $weight: 900, $color: #c32929);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.title {
+  margin: 0;
+  line-height: 0.98;
+  text-transform: uppercase;
+
+  font-size: clamp(34px, 5vw, 70px);
+  font-weight: 900;
+  color: #111;
+
+  span {
+    color: #dd7290; /* brand accent */
+  }
+}
+
+.subtitle {
+  margin: 4px 0 10px 0;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+  max-width: 440px;
+}
+
+/* CTA button */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(17, 17, 17, 0.92);
+  color: #fff;
+
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.22);
+  }
+
+  &:active {
+    transform: translateY(0px);
+  }
+}
+
+.arrow {
+  display: inline-block;
+  transform: translateY(-1px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .springCollection {
+    min-height: 480px;
+    background-position: center;
+    border-radius: 22px;
+  }
+
+  .springContainer {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .springCollection {
+    min-height: 440px;
+    margin: 70px 0;
+  }
+
+  .subtitle {
+    display: none; /* mobile clean look */
+  }
+
+  .cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
