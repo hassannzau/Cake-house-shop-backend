@@ -88,7 +88,9 @@
           );
           padding: 0 44px 0 16px;
           outline: none;
-          transition: box-shadow 0.2s ease, border 0.2s ease;
+          transition:
+            box-shadow 0.2s ease,
+            border 0.2s ease;
           &:focus {
             border: 1px solid rgba(172, 97, 118, 0.45);
             box-shadow: 0 14px 35px rgba(172, 97, 118, 0.18);
@@ -115,7 +117,9 @@
         cursor: pointer;
         display: grid;
         place-items: center;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
 
         img {
           @include container(18px, 18px);
@@ -517,7 +521,6 @@
   font-weight: 900;
 }
 
-/* empty state */
 .cartEmpty {
   padding: 24px 8px;
   text-align: center;
@@ -538,27 +541,288 @@
   font-weight: 800;
 }
 
-@media (max-width: 1024px) {
-  .headerLogo {
-    width: 190px;
-  }
-
-  .pageList {
-    gap: 10px;
-  }
+.mobileHeader {
+  display: none;
 }
 
-@media (max-width: 768px) {
-  .burger {
-    display: inline-block;
+@media (max-width: 1080px) {
+  .headerWrap {
+    .header_main {
+      display: none;
+    }
+
+    .mobileHeader {
+      display: block;
+      background: #f8f6f7;
+      border-bottom: 1px solid #ece7e7;
+    }
   }
 
-  .desktopNav {
-    display: none;
+  .mobileHeader {
+    width: 100%;
+  }
+
+  .main_mobile_header {
+    width: 92%;
+    margin: 0 auto;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .hamburger,
+  .shopping_icon {
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 35px;
+      height: 35px;
+      object-fit: contain;
+    }
+  }
+
+  .mobile_logo {
+    width: 110px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .shopping_icon,
+  .menuCart {
+    position: relative;
+  }
+
+  .cart_badge {
+    position: absolute;
+    right: -8px;
+    top: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #b79a57;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobileMenuOverlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background: #f8f6f7;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .mobileMenuTop {
+    width: 100%;
+    min-height: 100px;
+    padding: 0 24px;
+    border-bottom: 1px solid #e3dddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .closeButton {
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+  }
+
+  .menuLogo {
+    width: 120px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .menuCart {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+  }
+
+  .mobileMenuBody {
+    flex: 1;
+    padding: 24px 24px 10px;
   }
 
   .searchBox {
-    width: 150px;
+    width: 100%;
+    height: 72px;
+    border: 1px solid #d8d2d2;
+    border-radius: 6px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+
+    input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 18px;
+      color: #555;
+      font-family: inherit;
+
+      &::placeholder {
+        color: #7a7a7a;
+      }
+    }
+
+    img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      margin-left: 12px;
+      opacity: 0.7;
+    }
+  }
+
+  .menuLinks {
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+  }
+
+  .menuItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+
+    span {
+      font-size: 25px;
+      font-weight: 900;
+      color: rgba(211, 116, 143, 0.92);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+
+    img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+  }
+
+  .mobileMenuFooter {
+    border-top: 1px solid #e3dddd;
+    padding: 26px 24px 20px;
+  }
+
+  .accountRow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 30px;
+
+    img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    span {
+      font-size: 18px;
+      font-weight: 500;
+      color: #111;
+    }
+  }
+
+  .optionRow {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .optionLabel {
+    min-width: 120px;
+    font-size: 18px;
+    color: #6f6f6f;
+  }
+
+  .optionValue {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    span {
+      font-size: 18px;
+      color: #111;
+    }
+
+    img {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+    }
+  }
+
+  .socialIcons {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 34px;
+
+    img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      cursor: pointer;
+    }
   }
 }
 

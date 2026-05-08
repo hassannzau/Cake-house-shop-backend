@@ -135,6 +135,15 @@
   }
 }
 
+.error {
+  color: #e11d48;
+  font-size: 13px;
+  text-align: center;
+  padding: 10px 14px;
+  background: rgba(225, 29, 72, 0.08);
+  border-radius: 12px;
+}
+
 .submitBtn {
   height: 60px;
   width: 100%;

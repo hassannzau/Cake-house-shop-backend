@@ -6,6 +6,7 @@ export { default as CloseIcon } from "./remove.svg"
 export { default as HeartIcon } from "./heart.svg"
 export { default as HeartActiveIcon } from "./heartActive.svg"
 export { default as mapMarker } from "./marker.svg"
+export { default as Menu } from "./menu.svg"
 
 
 

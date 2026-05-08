@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import style from "./header.module.scss";
 import {
   CloseIcon,
+  Menu,
   SearchIcon,
   ShoppingIcon,
   UserIcon,
@@ -12,49 +13,37 @@ import {
 import Logo from "@/assets/images/logo/cake-logo.png";
 
 import { isActivePath } from "@/helpers/activePath";
-
-
+import { useAppDispatch, useAppSelector, type RootState } from "@/store/store";
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+} from "@/store/cartSlice";
+import { useTranslation } from "react-i18next";
 
 export default function Header() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { i18n } = useTranslation();
 
-  const [showModal, setShowModal] = useState(false); 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
 
   const menu = [
     { label: "HOME", path: "/" },
-    { label: "SHOP", path: "/shop" },
+    { label: "SHOP", path: "/products" },
     { label: "CONTACT", path: "/contact" },
-    { label: "BLOG", path: "/blog" },
   ];
 
-  const cartItems = [
-    {
-      id: "1",
-      title: "Strawberry Cake",
-      image: "https://placehold.co/86x110",
-      price: 29,
-      qty: 1,
-      color: "Pink",
-      size: "M",
-    },
-    {
-      id: "2",
-      title: "Chocolate Muffin Box",
-      image: "https://placehold.co/86x110",
-      price: 19,
-      qty: 2,
-      color: "Brown",
-      size: "L",
-    },
-  ];
+  const dispatch = useAppDispatch();
+  const shoppingList = useAppSelector((state: RootState) => state.cart.items);
 
+  console.log(shoppingList, "TEST LIST18");
 
   const closeAll = () => {
     setShowModal(false);
-    setMobileMenuOpen(false);
     setCartOpen(false);
   };
 
@@ -65,9 +54,23 @@ export default function Header() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
-
+  
   
 
+  const subtotal = shoppingList.reduce((sum, product) => {
+    const finalPrice =
+      product.discountedPrice > 0 ? product.discountedPrice : product.price;
+    return sum + finalPrice * product.quantity;
+  }, 0);
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  if (searchValue.trim()) {
+    const currentLang = i18n.language;
+    // Birbaşa dilli ünvana yönləndiririk ki, middleware redirect etməsin
+    navigate(`/${currentLang}/products?q=${searchValue.trim()}`);
+  }
+};
   return (
     <header className={style.headerWrap}>
       <div className={style.header_main}>
@@ -76,7 +79,6 @@ export default function Header() {
             type="button"
             className={style.burger}
             onClick={() => {
-              setMobileMenuOpen(true);
               setShowModal(false);
               setCartOpen(false);
             }}
@@ -112,12 +114,22 @@ export default function Header() {
 
         <div className={style.headerRight}>
           <div className={style.searchBox}>
-            <input
-              type="text"
-              placeholder="Search..."
-              className={style.searchInput}
-            />
-            <img src={SearchIcon} alt="Search" className={style.searchIcon} />
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchValue}
+                className={style.searchInput}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+              <button type="submit">
+                <img
+                  src={SearchIcon}
+                  alt="Search"
+                  className={style.searchIcon}
+                />
+              </button>
+            </form>
           </div>
 
           <button
@@ -126,14 +138,18 @@ export default function Header() {
             onClick={() => {
               setShowModal(true);
               setCartOpen(false);
-              setMobileMenuOpen(false);
             }}
             aria-label="User"
           >
             <img src={UserIcon} alt="" />
           </button>
 
-          <button type="button" className={style.iconBtn} aria-label="Wishlist">
+          <button
+            type="button"
+            className={style.iconBtn}
+            aria-label="Wishlist"
+            onClick={() => navigate("/account/wishlist")}
+          >
             <img src={WishlistIcon} alt="Wishlist" />
           </button>
 
@@ -143,7 +159,6 @@ export default function Header() {
             onClick={() => {
               setCartOpen(true);
               setShowModal(false);
-              setMobileMenuOpen(false);
             }}
             aria-label="Shopping bag"
           >
@@ -152,48 +167,6 @@ export default function Header() {
         </div>
       </div>
 
-      {mobileMenuOpen && (
-        <>
-          <div className={style.mobileDrawer}>
-            <div className={style.drawerTop}>
-              <p>MENU</p>
-              <button
-                type="button"
-                className={style.drawerClose}
-                onClick={() => setMobileMenuOpen(false)}
-                aria-label="Close menu"
-              >
-                <img src={CloseIcon} alt="Close" />
-              </button>
-            </div>
-
-            <ul className={style.mobileNavList}>
-              {menu.map((item) => {
-                const active = isActivePath(pathname, item.path);
-
-                return (
-                  <li
-                    key={item.path}
-                    className={active ? style.active : ""}
-                    onClick={() => {
-                      navigate(item.path);
-                      setMobileMenuOpen(false);
-                    }}
-                  >
-                    {item.label}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          <div
-            className={`${style.backWall} ${style.backWallOpen}`}
-            onClick={() => setMobileMenuOpen(false)}
-          />
-        </>
-      )}
-
       {showModal && (
         <>
           <div
@@ -201,7 +174,7 @@ export default function Header() {
             onClick={() => setShowModal(false)}
           />
 
-          <div className={style.userModal} >
+          <div className={style.userModal}>
             <div className={style.modalTop}>
               <p>LOGIN</p>
               <button
@@ -259,7 +232,7 @@ export default function Header() {
           <div className={style.cartDrawer} role="dialog" aria-modal="true">
             <div className={style.cartHeader}>
               <p className={style.cartTitle}>
-                SHOPPING BAG ( {cartItems.length} )
+                SHOPPING BAG ( {shoppingList.length} )
               </p>
 
               <button
@@ -273,7 +246,7 @@ export default function Header() {
             </div>
 
             <div className={style.cartBody}>
-              {cartItems.length === 0 ? (
+              {shoppingList.length === 0 ? (
                 <div className={style.cartEmpty}>
                   <p>Your shopping bag is empty.</p>
                   <button type="button" className={style.cartEmptyBtn}>
@@ -282,21 +255,25 @@ export default function Header() {
                 </div>
               ) : (
                 <ul className={style.cartList}>
-                  {cartItems.map((product) => (
+                  {shoppingList.map((product) => (
                     <li key={product.id} className={style.cartItem}>
                       <img
                         className={style.cartImg}
-                        src={product.image}
+                        src={product.images[0]}
                         alt={product.title}
                       />
 
                       <div className={style.cartMeta}>
                         <div className={style.cartTopLine}>
                           <div>
-                            <p className={style.cartItemTitle}>{product.title}</p>
+                            <p className={style.cartItemTitle}>
+                              {product.title}
+                            </p>
                             <div className={style.cartAttrs}>
                               {product.color && <p>Color: {product.color}</p>}
-                              {product.size && <p>Size: {product.size}</p>}
+                              {product.sizes[0].label && (
+                                <p>Size: {product.sizes[0].label}</p>
+                              )}
                             </div>
                           </div>
 
@@ -304,6 +281,7 @@ export default function Header() {
                             type="button"
                             className={style.cartRemove}
                             aria-label="Remove item"
+                            onClick={() => dispatch(removeFromCart(product))}
                           >
                             ✕
                           </button>
@@ -315,20 +293,33 @@ export default function Header() {
                               type="button"
                               className={style.cartQtyBtn}
                               aria-label="Decrease"
+                              onClick={() =>
+                                dispatch(decreaseQuantity(product))
+                              }
                             >
                               −
                             </button>
-                            <span className={style.cartQtyVal}>{product.qty}</span>
+                            <span className={style.cartQtyVal}>
+                              {product.quantity}
+                            </span>
                             <button
                               type="button"
                               className={style.cartQtyBtn}
                               aria-label="Increase"
+                              onClick={() =>
+                                dispatch(increaseQuantity(product))
+                              }
                             >
                               +
                             </button>
                           </div>
 
-                          <p className={style.cartPrice}>${product.price}</p>
+                          <p className={style.cartPrice}>
+                            $
+                            {product.discountedPrice > 0
+                              ? product.discountedPrice * product.quantity
+                              : product.price * product.quantity}
+                          </p>
                         </div>
                       </div>
                     </li>
@@ -340,7 +331,7 @@ export default function Header() {
             <div className={style.cartFooter}>
               <div className={style.cartSubtotal}>
                 <span>SUBTOTAL:</span>
-                <span>$12</span>
+                <span>${subtotal}</span>
               </div>
 
               <button
@@ -367,6 +358,90 @@ export default function Header() {
             </div>
           </div>
         </>
+      )}
+
+      <div className={style.mobileHeader}>
+        <div className={style.main_mobile_header}>
+          <div className={style.hamburger} onClick={() => setMenuOpen(true)}>
+            <img src={Menu} alt="menu" />
+          </div>
+
+          <div className={style.mobile_logo}>
+            <img src={Logo} alt="Logo" />
+          </div>
+
+          <div className={style.shopping_icon}>
+            <img src={ShoppingIcon} alt="shopping bag" />
+            <span className={style.cart_badge}>3</span>
+          </div>
+        </div>
+      </div>
+
+      {menuOpen && (
+        <div className={style.mobileMenuOverlay}>
+          <div className={style.mobileMenuTop}>
+            <div
+              className={style.closeButton}
+              onClick={() => setMenuOpen(false)}
+            >
+              <img src={CloseIcon} alt="close" />
+            </div>
+
+            <div className={style.menuLogo}>
+              <img src={Logo} alt="logo" />
+            </div>
+
+            <div className={style.menuCart}>
+              <img src={ShoppingIcon} alt="shopping bag" />
+              <span className={style.cart_badge}>3</span>
+            </div>
+          </div>
+
+          <div className={style.mobileMenuBody}>
+            <div className={style.searchBox}>
+              <input type="text" placeholder="Search products" />
+              <img src={SearchIcon} alt="search" />
+            </div>
+
+            <div className={style.menuLinks}>
+              {menu.map((item) => (
+                <div className={style.menuItem}>
+                  <span>{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className={style.mobileMenuFooter}>
+            <div className={style.accountRow}>
+              <img src={UserIcon} alt="user" />
+              <span>MY ACCOUNT</span>
+            </div>
+
+            <div className={style.optionRow}>
+              <span className={style.optionLabel}>Language</span>
+              <div className={style.optionValue}>
+                <span>United Kingdom | English</span>
+              </div>
+            </div>
+
+            {/* <div className={style.optionRow}>
+              <span className={style.optionLabel}>Currency</span>
+              <div className={style.optionValue}>
+                <span>$ USD</span>
+                <img src={ChevronDown} alt="dropdown" />
+              </div>
+            </div> */}
+
+            {/* <div className={style.socialIcons}>
+              <img src={FacebookIcon} alt="facebook" />
+              <img src={TwitterIcon} alt="twitter" />
+              <img src={InstagramIcon} alt="instagram" />
+              <img src={YoutubeIcon} alt="youtube" />
+              <img src={PinterestIcon} alt="pinterest" />
+            </div> */}
+          </div>
+        </div>
       )}
     </header>
   );
