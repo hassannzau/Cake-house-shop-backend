@@ -23,9 +23,10 @@ export const routes = [
   {path:"/account/details", component: <Pages.AccountDetails/>},
 
   //Account / Wishlist
-  {path:"/account/wishlist", component: <Pages.Wishlist/>}
+  {path:"/account/wishlist", component: <Pages.Wishlist/>},
 
-
+  // Checkout
+  {path:"/checkout", component: <Pages.Checkout/>},
 ];
 
 export default routes;

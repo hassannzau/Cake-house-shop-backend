@@ -8,3 +8,5 @@ export {default as Wishlist} from "./account/wishlist"
 
 export {default as Login} from "./auth/login"
 export {default as Register} from "./auth/register"
+
+export {default as Checkout} from "./checkout"

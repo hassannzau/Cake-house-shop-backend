@@ -1,16 +1,27 @@
+import { useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
 import "./limitedEdition.css";
-import { PRODUCTS } from "@/data/product";
 
 import { Autoplay, FreeMode, Pagination, Navigation } from "swiper/modules";
 
 import ProductCard from "@/assets/components/productCard/productCard";
+import { useAppDispatch, useAppSelector, type RootState } from "@/store/store";
+import { fetchNewArrivalsProduct } from "@/store/productSlice";
 
 export default function LimitedEdition() {
+  const dispatch = useAppDispatch();
+  const { items, loading } = useAppSelector((state: RootState) => state.products);
+
+  useEffect(() => {
+    dispatch(fetchNewArrivalsProduct());
+  }, [dispatch]);
+
+  if (loading || items.length === 0) return null;
+
   return (
     <section className="limitedEdition">
       <div className="limitedEdition__head">
@@ -22,7 +33,7 @@ export default function LimitedEdition() {
 
       <Swiper
         spaceBetween={18}
-        loop
+        loop={items.length > 1}
         freeMode
         pagination={{ clickable: true }}
         navigation
@@ -37,7 +48,7 @@ export default function LimitedEdition() {
           1024: { slidesPerView: 4, spaceBetween: 18 },
         }}
       >
-        {PRODUCTS.map((item) => (
+        {items.map((item) => (
           <SwiperSlide key={item.id}>
             <ProductCard card={item} />
           </SwiperSlide>

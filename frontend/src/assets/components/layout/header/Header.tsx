@@ -19,6 +19,7 @@ import {
   increaseQuantity,
   decreaseQuantity,
 } from "@/store/cartSlice";
+import { loginUser, logout } from "@/store/authSlice";
 import { useTranslation } from "react-i18next";
 
 export default function Header() {
@@ -30,6 +31,9 @@ export default function Header() {
   const [showModal, setShowModal] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const menu = [
     { label: "HOME", path: "/" },
@@ -39,8 +43,21 @@ export default function Header() {
 
   const dispatch = useAppDispatch();
   const shoppingList = useAppSelector((state: RootState) => state.cart.items);
+  const token = useAppSelector((state: RootState) => state.auth.token);
+  const authLoading = useAppSelector((state: RootState) => state.auth.loading);
 
-  console.log(shoppingList, "TEST LIST18");
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError(null);
+    const result = await dispatch(loginUser({ email: loginEmail, password: loginPassword }));
+    if (loginUser.fulfilled.match(result)) {
+      setShowModal(false);
+      setLoginEmail("");
+      setLoginPassword("");
+    } else {
+      setLoginError((result.payload as string) || "Login failed.");
+    }
+  };
 
   const closeAll = () => {
     setShowModal(false);
@@ -161,8 +178,21 @@ const handleSubmit = (e) => {
               setShowModal(false);
             }}
             aria-label="Shopping bag"
+            style={{ position: "relative" }}
           >
             <img src={ShoppingIcon} alt="Cart" />
+            {shoppingList.length > 0 && (
+              <span className={style.cart_badge} style={{
+                position: "absolute", top: -6, right: -6,
+                background: "#e11d48", color: "#fff",
+                borderRadius: "50%", fontSize: 11, fontWeight: 700,
+                width: 18, height: 18, display: "flex",
+                alignItems: "center", justifyContent: "center",
+                lineHeight: 1,
+              }}>
+                {shoppingList.length}
+              </span>
+            )}
           </button>
         </div>
       </div>
@@ -176,7 +206,7 @@ const handleSubmit = (e) => {
 
           <div className={style.userModal}>
             <div className={style.modalTop}>
-              <p>LOGIN</p>
+              <p>{token ? "MY ACCOUNT" : "LOGIN"}</p>
               <button
                 type="button"
                 className={style.closeIcon}
@@ -187,37 +217,49 @@ const handleSubmit = (e) => {
               </button>
             </div>
 
-            <form className={style.formModal}>
-              <input
-                type="text"
-                placeholder="Username or email address"
-                className={style.modalInput}
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                className={style.modalInput}
-              />
-
-              <div className={style.aboutPass}>
-                <label className={style.rememberPass}>
-                  <input type="checkbox" />
-                  <span>Remember me</span>
-                </label>
-
-                <a className={style.lostPass} href="/">
-                  Lost password?
-                </a>
+            {token ? (
+              <div className={style.formModal}>
+                <p style={{ fontSize: 14, marginBottom: 16, color: "#555" }}>You are logged in.</p>
+                <button
+                  type="button"
+                  className={style.loginBtn}
+                  onClick={() => { dispatch(logout()); setShowModal(false); }}
+                >
+                  LOG OUT
+                </button>
+                <p className={style.createAcc}>
+                  <Link to="/account/details" onClick={() => setShowModal(false)}>My Account</Link>
+                </p>
               </div>
-
-              <button type="submit" className={style.loginBtn}>
-                LOG IN
-              </button>
-
-              <p className={style.createAcc}>
-                No account yet? <Link to="/auth/register">Create Account</Link>
-              </p>
-            </form>
+            ) : (
+              <form className={style.formModal} onSubmit={handleLogin}>
+                {loginError && (
+                  <p style={{ color: "#e11d48", fontSize: 13, marginBottom: 8 }}>{loginError}</p>
+                )}
+                <input
+                  type="email"
+                  placeholder="Email address"
+                  className={style.modalInput}
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  required
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className={style.modalInput}
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  required
+                />
+                <button type="submit" className={style.loginBtn} disabled={authLoading}>
+                  {authLoading ? "LOGGING IN..." : "LOG IN"}
+                </button>
+                <p className={style.createAcc}>
+                  No account yet? <Link to="/auth/register" onClick={() => setShowModal(false)}>Create Account</Link>
+                </p>
+              </form>
+            )}
           </div>
         </>
       )}
@@ -249,7 +291,11 @@ const handleSubmit = (e) => {
               {shoppingList.length === 0 ? (
                 <div className={style.cartEmpty}>
                   <p>Your shopping bag is empty.</p>
-                  <button type="button" className={style.cartEmptyBtn}>
+                  <button
+                    type="button"
+                    className={style.cartEmptyBtn}
+                    onClick={() => { setCartOpen(false); navigate("/products"); }}
+                  >
                     Continue shopping
                   </button>
                 </div>
@@ -259,7 +305,7 @@ const handleSubmit = (e) => {
                     <li key={product.id} className={style.cartItem}>
                       <img
                         className={style.cartImg}
-                        src={product.images[0]}
+                        src={product.images?.[0] ?? ""}
                         alt={product.title}
                       />
 
@@ -271,7 +317,7 @@ const handleSubmit = (e) => {
                             </p>
                             <div className={style.cartAttrs}>
                               {product.color && <p>Color: {product.color}</p>}
-                              {product.sizes[0].label && (
+                              {product.sizes?.[0]?.label && (
                                 <p>Size: {product.sizes[0].label}</p>
                               )}
                             </div>
@@ -370,9 +416,14 @@ const handleSubmit = (e) => {
             <img src={Logo} alt="Logo" />
           </div>
 
-          <div className={style.shopping_icon}>
+          <div
+            className={style.shopping_icon}
+            onClick={() => { setCartOpen(true); setShowModal(false); }}
+          >
             <img src={ShoppingIcon} alt="shopping bag" />
-            <span className={style.cart_badge}>3</span>
+            {shoppingList.length > 0 && (
+              <span className={style.cart_badge}>{shoppingList.length}</span>
+            )}
           </div>
         </div>
       </div>
@@ -391,9 +442,14 @@ const handleSubmit = (e) => {
               <img src={Logo} alt="logo" />
             </div>
 
-            <div className={style.menuCart}>
+            <div
+              className={style.menuCart}
+              onClick={() => { setMenuOpen(false); setCartOpen(true); }}
+            >
               <img src={ShoppingIcon} alt="shopping bag" />
-              <span className={style.cart_badge}>3</span>
+              {shoppingList.length > 0 && (
+                <span className={style.cart_badge}>{shoppingList.length}</span>
+              )}
             </div>
           </div>
 

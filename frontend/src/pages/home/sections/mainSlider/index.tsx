@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -33,6 +34,8 @@ const fakeSliderData: FakeData[] = [
 ];
 
 export default function MainSlider() {
+  const navigate = useNavigate();
+
   return (
     <Swiper
       slidesPerView={1}
@@ -55,7 +58,13 @@ export default function MainSlider() {
             <p className="mainSlider-p">— {slide.p}</p>
             <h1 className="mainSlider-h1">{slide.title}</h1>
             <h1 className="mainSlider-h2">{slide.title2}</h1>
-            <p className="mainSlider-p2">Discover more</p>
+            <p
+              className="mainSlider-p2"
+              onClick={() => navigate("/products")}
+              style={{ cursor: "pointer" }}
+            >
+              Discover more →
+            </p>
           </div>
           <img src={slide.img} alt="Slide" className="mainSlide-img" />
         </SwiperSlide>

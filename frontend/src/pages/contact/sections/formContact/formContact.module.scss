@@ -61,9 +61,44 @@
   transition: transform 0.18s ease, opacity 0.18s ease;
 }
 
-.submitBtn:hover {
+.submitBtn:hover:not(:disabled) {
   transform: translateY(-2px);
   opacity: 0.92;
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.errorMsg {
+  color: #e11d48;
+  font-size: 13px;
+  padding: 10px 14px;
+  background: rgba(225, 29, 72, 0.08);
+  border-radius: 6px;
+}
+
+.successMsg {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 980px;
+
+  p {
+    font-size: 16px;
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 0;
+  }
+
+  .submitBtn {
+    width: auto;
+    padding: 0 32px;
+  }
 }
 
 @media (max-width: 900px) {
